@@ -10,7 +10,7 @@ from jax import linear_util as lu
 from jax.api_util import flatten_fun_nokwargs
 from jax.tree_util import tree_flatten, tree_unflatten
 from jax._src import source_info_util
-from jax._src.util import split_list, safe_map, safe_zip, curry
+from jax._src.util import safe_map, safe_zip, curry
 
 source_info_util.register_exclusion(__file__)
 
@@ -29,7 +29,7 @@ class NanTracer(core.Tracer):
   aval = property(lambda self: core.get_aval(self.val))
 
 class NanTrace(core.Trace):
-  pure = lift = sublift = lambda self, val: NanTracer(val)
+  pure = lift = sublift = lambda self, val: NanTracer(self, val)
 
   def process_primitive(self, primitive, tracers, params):
     vals_in = [t.val for t in tracers]
@@ -61,7 +61,7 @@ def _any(lst): return reduce(op.or_, lst, False)
 def nancheck(fun: Callable, *args):
   args, in_tree = tree_flatten(args)
   fun, out_tree = flatten_fun_nokwargs(lu.wrap_init(fun), in_tree)
-  out_flat = nancheck_flat(fun, *args)
+  out_flat = nancheck_flat(fun, *args)  # type: ignore
   return tree_unflatten(out_tree(), out_flat)
 
 def nancheck_flat(fun: lu.WrappedFun, *args):
