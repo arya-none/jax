@@ -52,7 +52,7 @@ class NanTrace(core.Trace):
       val_out = [val_out]
     idx = lax.min(main.idx, len(main.backtraces))
     for x in val_out:
-      main.idx = lax.select(x != x, idx, main.idx)
+      main.idx = lax.select(jnp.any(x != x), idx, main.idx)
     main.backtraces.append((source_info_util.current(), str(primitive)))
 
 def _any(lst): return reduce(op.or_, lst, False)
