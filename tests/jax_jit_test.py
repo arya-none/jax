@@ -45,9 +45,6 @@ class JaxJitTest(parameterized.TestCase):
         jaxlib.jax_jit._is_float0(np.zeros((5, 5), dtype=jax.float0)))
     self.assertFalse(jaxlib.jax_jit._is_float0(np.zeros((5, 5))))
 
-  def test_DtypeTo32BitDtype(self):
-    self.assertEqual(np.float32, jaxlib.jax_jit._DtypeTo32BitDtype(np.float64))
-
   @parameterized.parameters([jax.device_put, _cpp_device_put])
   def test_device_put_on_numpy_scalars(self, device_put_function):
 
